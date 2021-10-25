@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Verification of registered number</title>
+</head>
+<body>
+<div class="logincontent" align="center">
+			<div class="logintop">
+				<h1>Verification Page</h1>
+			</div><br><br><br><br>
+
+    <div class="loginbottom">
+    <form action = '/verification' method ="post" autocomplete="off">
+        <div class="msg"> {{ msg }} </div><br>
+    <div>
+        <label> Enter Mobile Number </label><br><br>
+
+        <input type="text" name="number" required/>
+
+        <button type="submit">check</button>
+
+
+
+
+    </div>
+</form>
+    </div>
+</div>
+</body>
+</html>
