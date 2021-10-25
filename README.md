@@ -1,5 +1,6 @@
 # FinalProject
-Author : Aman Gupta 
+
+# Author : Aman Gupta 
 Project Title: Result-Server
 
 In this project I am going to build a web application with the help of which the students registered for an exam can see their result after otp authentication 
