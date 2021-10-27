@@ -1,7 +1,7 @@
 
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL
-from flask_mail import Mail
+from flask_mail import Mail, Message
 import MySQLdb.cursors
 from twilio.rest import Client
 import random
@@ -12,27 +12,13 @@ app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
 
 
-# app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-# app.config['MAIL_PORT'] = 465
-# app.config['MAIL_USERNAME'] = 'yourId@gmail.com'
-# app.config['MAIL_PASSWORD'] = '*****'
-# app.config['MAIL_USE_TLS'] = False
-# app.config['MAIL_USE_SSL'] = True
-# mail = Mail(app)
-
-
-
-# @app.route("/sendEmail", methods=['POST'])
-# def sendEmail():
-#     msg = Message(
-#         'Hello',
-#         sender='yourId@gmail.com',
-#         recipients=['receiver’sid@gmail.com']
-#     )
-#     msg.body = 'Hello Flask message sent from Flask-Mail'
-#     mail.send(msg)
-#     return 'Sent'
-
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
 
 app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST')
 app.config['MYSQL_USER'] = os.getenv('MYSQL_USER')
@@ -50,6 +36,7 @@ def home():
 
 @app.route('/verification', methods=['GET', 'POST'])
 def verification():
+    # In this method we verify the number entered in Verification page.
     if request.method == 'POST':
         msg = None
         number = request.form['number']
@@ -68,6 +55,7 @@ def verification():
 
 @app.route('/getOTP', methods=['POST'])
 def getOTP():
+    # In this method we send the otp to the registered user if entered registered contact number.
     number = request.form['number']
     if 'number' in session:
         msg = None
@@ -90,11 +78,15 @@ def getOTP():
 
 @app.route('/validateOTP', methods=['POST'])
 def login():
+    # In this method we validate the otp entered by user and direct the user to user's page
+    # if the entered otp is correct otherwise direct user back to otpAuthentication.
+
     otp = request.form['otp']
     if 'response' in session:
+
         msg = None
         s = session['response']
-        session.pop('response',None)
+        session.pop('response', None)
         if s == otp:
             cursor = mysql.connection.cursor()
             number = session['number']
@@ -148,8 +140,29 @@ def result():
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT stream,score FROM outcome WHERE id = %i;" % id)
     data = cursor.fetchall()
-    return str(data)
+    msg = "Your score in the stream you appeared for is : " + str(list(list(data)[0])[:])
+    session['msg'] = msg
+    return render_template('final.html', msg=msg)
 
+
+@app.route('/sendEmail', methods=['GET'])
+def sendEmail():
+    id = session['id']
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT email FROM details WHERE id = %i;" % id)
+    data = cursor.fetchall()
+    email = list(list(data[0]))[0]
+    session.pop('id', None)
+    msg1 = Message(
+        'Hello',
+        sender=os.getenv('MAIL_USERNAME'),
+        recipients=[email]
+    )
+    msg1.body = session['msg']
+    session.pop('msg', None)
+
+    mail.send(msg1)
+    return 'Email Sent'
 
 
 if __name__ == "__main__":
