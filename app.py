@@ -162,7 +162,7 @@ def sendEmail():
     session.pop('msg', None)
 
     mail.send(msg1)
-    return 'Email Sent'
+    return 'Email has been sent to your registered email id.'
 
 
 if __name__ == "__main__":
