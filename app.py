@@ -1,19 +1,43 @@
 
-
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL
+from flask_mail import Mail
 import MySQLdb.cursors
 from twilio.rest import Client
 import random
-
+import os
+from dotenv import load_dotenv
 app = Flask(__name__)
 
-app.secret_key = '13020621@Aman'
+app.secret_key = os.getenv('SECRET_KEY')
 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '13020621#Aman'
-app.config['MYSQL_DB'] = 'result'
+
+# app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+# app.config['MAIL_PORT'] = 465
+# app.config['MAIL_USERNAME'] = 'yourId@gmail.com'
+# app.config['MAIL_PASSWORD'] = '*****'
+# app.config['MAIL_USE_TLS'] = False
+# app.config['MAIL_USE_SSL'] = True
+# mail = Mail(app)
+
+
+
+# @app.route("/sendEmail", methods=['POST'])
+# def sendEmail():
+#     msg = Message(
+#         'Hello',
+#         sender='yourId@gmail.com',
+#         recipients=['receiver’sid@gmail.com']
+#     )
+#     msg.body = 'Hello Flask message sent from Flask-Mail'
+#     mail.send(msg)
+#     return 'Sent'
+
+
+app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST')
+app.config['MYSQL_USER'] = os.getenv('MYSQL_USER')
+app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')
+app.config['MYSQL_DB'] = os.getenv('MYSQL_DB')
 
 mysql = MySQL(app)
 
@@ -89,8 +113,8 @@ def login():
 
 
 def getOTPApi(number):
-    account_sid = 'AC3207c908a23b982eaf9d1cec872e3270'
-    auth_token = '5c15a69279424c40b8c53b1793f2a9d2'
+    account_sid = os.getenv('ACCOUNT_SID')
+    auth_token = os.getenv('AUTH_TOKEN')
     client = Client(account_sid, auth_token)
     otp = random.randrange(100000, 999999)
     session['response'] = str(otp)
