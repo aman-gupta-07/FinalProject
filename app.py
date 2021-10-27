@@ -90,7 +90,7 @@ def login():
 
 def getOTPApi(number):
     account_sid = 'AC3207c908a23b982eaf9d1cec872e3270'
-    auth_token = 'b6e1ea332d9e07717f7fe282148f6911'
+    auth_token = '5c15a69279424c40b8c53b1793f2a9d2'
     client = Client(account_sid, auth_token)
     otp = random.randrange(100000, 999999)
     session['response'] = str(otp)
