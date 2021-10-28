@@ -140,7 +140,7 @@ def result():
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT stream,score FROM outcome WHERE id = %i;" % id)
     data = cursor.fetchall()
-    msg = "Your score in the stream you appeared for is : " + str(list(list(data)[0])[:])
+    msg = "Your score in the stream you appeared for qualifying in Fynd Academy is : " + str(list(list(data)[0])[:])
     session['msg'] = msg
     return render_template('final.html', msg=msg)
 
