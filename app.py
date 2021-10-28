@@ -44,7 +44,7 @@ def verification():
         cursor.execute("SELECT number FROM details WHERE number = %s;" % number)
         data = cursor.fetchall()
         if len(data) > 0:
-            msg = "You have successfully verified your registered mobile number."
+            msg = "You entered your registered mobile number,please enter the same mobile number for OTP authentication."
             session['number'] = number
             return render_template('otpGeneration.html', msg=msg)
         else:
